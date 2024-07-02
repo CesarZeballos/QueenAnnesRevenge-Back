@@ -1,81 +1,81 @@
-import { Recipes } from "../entities/Recipes";
+import { AppDataSource } from "../config/data-source";
+import { Recipes, RecipeState } from "../entities/Recipes";
 import { IRecipe } from "../interfaces/IRecipes";
 import { RecipeDto } from "../interfaces/RecipesDto";
 
 export const getRecipesServices = async () => {
-    const recipes: IRecipe[] = [
-        {
-            id: 1,
-            name: "Cerveza",
-            nickname: "Cerveza",
-            vape: [],
-            macerated: [],
-            abvMacerated: 0.9,
-            time: 5,
-            abvGin: 0.4,
-            state: true
-        }
+    try {
+        const recipes: IRecipe[] = await AppDataSource.getRepository(Recipes).find()
+        return recipes
+    } catch (error: any) {
+        throw new Error(error)
+    }
+}
 
-    ]
-    return recipes
+export const getRecipeByIdServices = async (id: number) => {
+    try {
+        const recipe: IRecipe | null = await AppDataSource.getRepository(Recipes).findOneBy({id})
+        return recipe
+    } catch (error: any) {
+        throw new Error(error)
+    }
 }
 
 export const createRecipeServices = async (recipeData: RecipeDto) => {
-    const newRecipe: IRecipe = {
-        id: 1,
-        name: "031",
-        nickname: recipeData.nickname,
-        vape: recipeData.vape,
-        macerated: recipeData.macerated,
-        abvMacerated: recipeData.abvMacerated,
-        time: recipeData.time,
-        abvGin: recipeData.abvGin,
-        state: true
-    }
-    return newRecipe
-}
-
-export const getRecipeByIdServices = async () => {
-    const recipes: IRecipe = {
-            id: 1,
-            name: "get recipe",
-            nickname: "Cerveza",
-            vape: [],
-            macerated: [],
-            abvMacerated: 0.9,
-            time: 5,
-            abvGin: 0.4,
-            state: true
-        }
-    return recipes
-}
-
-export const updateRecipeServices = async (recipeData: RecipeDto) => {
-    const recipes: IRecipe = {
-            id: 1,
-            name: "update recipe",
+    try {
+        const newRecipe: Recipes = await AppDataSource.getRepository(Recipes).create({
+            name: recipeData.name,
             nickname: recipeData.nickname,
             vape: recipeData.vape,
             macerated: recipeData.macerated,
             abvMacerated: recipeData.abvMacerated,
             time: recipeData.time,
             abvGin: recipeData.abvGin,
-            state: true
-        }
-    return recipes
+            state: RecipeState.active
+        })
+        const results = await AppDataSource.getRepository(Recipes).save(newRecipe)
+        return results
+    } catch (error: any) {
+        throw new Error(error)
+    }
+}
+export const updateRecipeServices = async (id:number, recipeData: RecipeDto) => {
+    try {
+        const recipe = await AppDataSource.getRepository(Recipes).findOneBy({id})
+        if (!recipe) throw new Error("Recipe not found")
+        AppDataSource.getRepository(Recipes).merge(recipe, {
+            name: recipeData.name,
+            nickname: recipeData.nickname,
+            vape: recipeData.vape,
+            macerated: recipeData.macerated,
+            abvMacerated: recipeData.abvMacerated,
+            time: recipeData.time,
+            abvGin: recipeData.abvGin,
+            state: RecipeState.active
+        })
+        const results = await AppDataSource.getRepository(Recipes).save(recipe)
+        return results
+    } catch (error: any) {
+        throw new Error(error)
+    }
 }
 
-export const disabledRecipeServices = async () => {
-    const recipes: IRecipe = {
-            id: 1,
-            name: "disabled recipe",
-            nickname: "Cerveza",
-            vape: [],
-            macerated: [],
-            abvMacerated: 0.9,
-            time: 5,
-            abvGin: 0.4,
-            state: true
+export const disabledRecipeServices = async (id: number) => {
+    try {
+        const recipe = await AppDataSource.getRepository(Recipes).findOneBy({id})
+        if (!recipe) throw new Error("Recipe not found")
+        if (recipe.state === RecipeState.active) {
+            AppDataSource.getRepository(Recipes).merge(recipe, {
+                state: RecipeState.disabled
+            })
+        } else {
+            AppDataSource.getRepository(Recipes).merge(recipe, {
+                state: RecipeState.active
+            })
         }
-    return recipes
+        const results = await AppDataSource.getRepository(Recipes).save(recipe)
+        return results
+    } catch (error: any) {
+        throw new Error(error)
+    }
 }

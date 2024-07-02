@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { IRecipe } from "../interfaces/IRecipes";
 import { createRecipeServices, disabledRecipeServices, getRecipeByIdServices, getRecipesServices, updateRecipeServices } from "../services/recipesServices";
+import { RecipeDto } from "../interfaces/RecipesDto";
 
 
 export const getRecipes = async (req: Request, res: Response) => {
@@ -12,21 +13,23 @@ export const getRecipes = async (req: Request, res: Response) => {
     }
 }
 
-export const createRecipe = async (req: Request, res: Response) => {
-    const {nickname, vape, macerated, abvMacerated, time, abvGin} = req.body;
+export const getRecipe = async (req: Request, res: Response) => {
+    const {id} = req.params;
+    const idNumber = Number(id);
     try {
-        const newRecipe: IRecipe = await createRecipeServices({nickname, vape, macerated, abvMacerated, time, abvGin});
-        res.status(201).json(newRecipe);
+        const recipe: IRecipe | null = await getRecipeByIdServices(idNumber);
+        res.status(200).json(recipe);
     } catch (error: any) {
         res.status(400).json({ error: error.message})
     }
 }
 
-export const getRecipe = async (req: Request, res: Response) => {
-    const {id} = req.params;
+export const createRecipe = async (req: Request, res: Response) => {
+    console.log(req.body)
     try {
-        const recipe: IRecipe = await getRecipeByIdServices();
-        res.status(200).json(recipe);
+        const {name, nickname, vape, macerated, abvMacerated, time, abvGin}: RecipeDto = req.body;
+        const newRecipe: IRecipe = await createRecipeServices({name, nickname, vape, macerated, abvMacerated, time, abvGin});
+        res.status(201).json(newRecipe);
     } catch (error: any) {
         res.status(400).json({ error: error.message})
     }
@@ -34,9 +37,10 @@ export const getRecipe = async (req: Request, res: Response) => {
 
 export const updateRecipe = async (req: Request, res: Response) => {
     const {id} = req.params;
-    const {nickname, vape, macerated, abvMacerated, time, abvGin} = req.body;
+    const idNumber = Number(id);
+    const {name, nickname, vape, macerated, abvMacerated, time, abvGin} = req.body;
     try {
-        const recipe: IRecipe = await updateRecipeServices({nickname, vape, macerated, abvMacerated, time, abvGin});
+        const recipe: IRecipe = await updateRecipeServices(idNumber, {name, nickname, vape, macerated, abvMacerated, time, abvGin});
         res.status(200).json(recipe);
     } catch (error: any) {
         res.status(400).json({ error: error.message})
@@ -45,8 +49,9 @@ export const updateRecipe = async (req: Request, res: Response) => {
 
 export const disabledRecipe = async (req: Request, res: Response) => {
     const {id} = req.params;
+    const idNumber = Number(id);
     try {
-        const recipe: IRecipe = await disabledRecipeServices();
+        const recipe: IRecipe = await disabledRecipeServices(idNumber);
         res.status(200).json(recipe);
     } catch (error: any) {
         res.status(400).json({ error: error.message})

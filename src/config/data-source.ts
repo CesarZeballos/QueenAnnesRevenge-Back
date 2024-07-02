@@ -1,4 +1,4 @@
-import { DataSource } from "typeorm/data-source";
+import { DataSource } from "typeorm";
 import { Recipes } from "../entities/Recipes";
 
 export const AppDataSource = new DataSource({
@@ -10,7 +10,7 @@ export const AppDataSource = new DataSource({
     database: "queen_annes_revenge",
     // dropSchema: true, // esto hace que elimine todos los datos creados...
     synchronize: true,
-    logging: true,
+    logging: false,
     entities: [Recipes],
     subscribers: [],
     migrations: [],

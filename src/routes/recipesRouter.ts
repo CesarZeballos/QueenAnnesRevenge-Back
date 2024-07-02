@@ -5,8 +5,8 @@ const recipesRouter: Router = Router();
 
 recipesRouter.get("/", getRecipes);
 recipesRouter.get("/:id", getRecipe);
-recipesRouter.post("/", createRecipe);
+recipesRouter.post("/schedule", createRecipe);
 recipesRouter.put("/:id", updateRecipe);
-recipesRouter.put("/:id/delete", disabledRecipe);
+recipesRouter.put("/:id/state", disabledRecipe);
 
 export default recipesRouter;
