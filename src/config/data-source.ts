@@ -15,5 +15,3 @@ export const AppDataSource = new DataSource({
     subscribers: [],
     migrations: [],
 })
-
-export const RecipesModel = AppDataSource.getRepository(Recipes)
