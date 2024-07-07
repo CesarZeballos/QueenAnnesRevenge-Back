@@ -7,11 +7,16 @@ export interface IRecipe {
     abvMacerated: number,
     time: number,
     abvGin: number,
-    state: boolean
+    state: RecipeState
 }
 export interface IBotanic {
     name: string,
     size: number
+}
+
+export enum RecipeState {
+    active = "active",
+    disabled = "disabled"
 }
 
 

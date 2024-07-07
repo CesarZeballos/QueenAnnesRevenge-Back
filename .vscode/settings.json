@@ -6,8 +6,8 @@
       "titleBar.inactiveForeground": "#A51B17",
       "statusBar.background": "#50412E",
     "statusBar.foreground": "#F3E3C4",
-    "activityBar.background": "#50412E",
-    "activityBar.foreground": "#F3E3C4",
+    "activityBar.background": "#E8CEA6",
+    "activityBar.foreground": "#50412E",
     // "editor.background": "#1E1E1E",
     // "editor.foreground": "#D4D4D4"
 },
